@@ -14,3 +14,7 @@ Highcharts is free for non-commercial use.
 
 http://www.highcharts.com/products/highcharts
 
+# Heroku
+
+volt-highcharts-app
+git push heroku master
