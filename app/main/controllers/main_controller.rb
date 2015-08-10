@@ -44,7 +44,7 @@ module Main
       @non_area_chart_types = %w(column line spline scatter bubble).sort!
       @select_types = @chart_types + %w(mix remix)
 
-      @select_speeds = %w(zany fast medium slow glacial pause)
+      @select_speeds = %w(rapid fast medium slow pause)
       self.chart_speed = 'fast'
 
       self.model = chart_options
@@ -57,12 +57,11 @@ module Main
       # milliseconds
       @poll_interval = case @chart_speed
         when 'pause'    then    0
-        when 'zany'     then   50
+        when 'rapid'    then   50
         when 'fast'     then  100
         when 'medium'   then  500
         when 'slow'     then 1000
         when 'slow'     then 2000
-        when 'glacial'  then 4000
         else
           raise RuntimeError, "invalid chart speed '#{@chart_speed}'"
       end
