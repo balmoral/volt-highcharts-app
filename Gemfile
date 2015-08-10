@@ -26,8 +26,8 @@ gem 'volt-user_templates', '~> 0.4.0'
 # gem 'volt-mailer', '~> 0.1.0'
 
 # Add volt-highcharts
-gem 'opal-highcharts', '~> 0.1.1'
-gem 'volt-highcharts', '~> 0.1.2'
+gem 'opal-highcharts', '~> 0.1.2'
+gem 'volt-highcharts', '~> 0.1.4'
 
 # Use rbnacl for message bus encrpytion
 # (optional, if you don't need encryption, disable in app.rb and remove)
