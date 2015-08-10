@@ -14,3 +14,10 @@ Adjust app.rb as per the volt heroku documentation
 This will allow you to use your local Mongo database for 
 development and the MONGOLAB for the production release on Heroku.
 
+
+do you have a domain you own?
+if so just point a subdomain CNAME or ALIAS to volt-highcharts-app.herokuapp.com
+then go into heroku and add the custom domain from your apps dashboard
+so you could have volt-highchart.yourdomain.com
+For example: http://starttank.ppd.io/
+that’s heroku
