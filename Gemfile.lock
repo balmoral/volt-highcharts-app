@@ -134,7 +134,7 @@ GEM
     volt-bootstrap (0.0.10)
     volt-bootstrap_jumbotron_theme (0.1.0)
     volt-fields (0.1.3)
-    volt-highcharts (0.1.2)
+    volt-highcharts (0.1.3)
       opal-highcharts (~> 0.1.0)
     volt-mailer (0.1.0)
       pony (~> 1.11)
