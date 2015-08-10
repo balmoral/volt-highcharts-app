@@ -4,7 +4,10 @@ gem 'opal'
 gem 'jquery'
 gem 'opal-jquery'
 
-gem 'volt', '0.9.5.pre3'
+ruby "2.2.1"
+
+# gem 'volt', '0.9.5.pre4
+gem 'volt', :git => 'https://github.com/voltrb/volt.git'
 
 # volt uses mongo as the default data store.
 gem 'volt-mongo', '~> 0.1.0'
@@ -23,7 +26,8 @@ gem 'volt-user_templates', '~> 0.4.0'
 # gem 'volt-mailer', '~> 0.1.0'
 
 # Add volt-highcharts
-gem 'volt-highcharts', '~> 0.1.0'
+gem 'opal-highcharts', '~> 0.1.1'
+gem 'volt-highcharts', '~> 0.1.2'
 
 # Use rbnacl for message bus encrpytion
 # (optional, if you don't need encryption, disable in app.rb and remove)

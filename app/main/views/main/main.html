@@ -7,7 +7,6 @@
       <ul class="nav nav-pills pull-right">
         <:nav href="/">Home</:nav>
         <:nav href="/about">About</:nav>
-        <:user_templates:menu />
       </ul>
       <h3 class="text-muted">volt-highcharts-app</h3>
     </div>
@@ -17,7 +16,7 @@
     {{ view main_path, 'body', {controller_group: 'main'} }}
 
     <div class="footer">
-      <p>&copy; Company {{ Time.now.year }}</p>
+      <p>&copy; Colin Gunn {{ Time.now.year }}</p>
     </div>
 
   </div>

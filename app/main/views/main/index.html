@@ -1,6 +1,18 @@
 <:Title>
   volt-highcharts
 <:Body>
-  <span>
-    <:highcharts chart="{{ chart_options }}" />
+  <span id="chart">
+    <:highcharts options="{{ chart_options }}" />
   </span>
+  <hr>
+  <div class="row">
+    <div class="col-md-3">
+      <:fields:select label='' value="{{ chart_speed }}" options="{{ select_speed_pairs }}"/>
+    </div>
+    <div class="col-md-3">
+      <:fields:select label='' value="{{ chart_type }}"  options="{{ select_types }}" />
+    </div>
+    <div class="col-md-3">
+      <:fields:checkbox label='animation' checked="{{ chart_animated }}"/>
+    </div>
+  </div>
