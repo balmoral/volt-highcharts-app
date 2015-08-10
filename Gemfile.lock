@@ -160,6 +160,7 @@ DEPENDENCIES
   concurrent-ruby-ext (~> 0.8.0)
   csso-rails (~> 0.3.4)
   jquery
+  nokogiri
   opal
   opal-highcharts (~> 0.1.1)
   opal-jquery
