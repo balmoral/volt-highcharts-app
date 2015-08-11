@@ -2,17 +2,82 @@
   volt-highcharts
 <:Body>
   <span id="chart">
-    <:highcharts options="{{ chart_options }}" />
+    <:highcharts options="{{ options }}" />
   </span>
-  <hr>
+  <br>
   <div class="row">
-    <div class="col-md-3">
-      <:fields:select label='' value="{{ chart_speed }}" options="{{ select_speed_pairs }}"/>
+    <div class="col-xs-4">
+      <:fields:select label='' value="{{ speed }}" options="{{ select_speed_pairs }}"/>
     </div>
-    <div class="col-md-3">
-      <:fields:select label='' value="{{ chart_type }}"  options="{{ select_types }}" />
+    <div class="col-xs-4">
+      <:fields:select label='' value="{{ type }}"  options="{{ select_types }}" />
     </div>
-    <div class="col-md-3">
-      <:fields:checkbox label='animation' checked="{{ chart_animated }}"/>
+    <div class="col-xs-4">
+      <:fields:checkbox label='animation' checked="{{ animate }}"/>
     </div>
   </div>
+  <h4>operation</h4>
+  <p>
+  Choose a speed and series type.
+  Animation graduates redraws when the data changes.
+  Chart data and mixed types are randomly generated.
+  </p>
+  <h4>a little view code</h4>
+  <pre>
+    &lt:Body&gt
+      &ltspan id="chart"&gt
+        &lt:highcharts options="&#123&#123 options &#125&#125" /&gt
+      &lt/span&gt
+  </pre>
+  <h4>and not a lot of controller code</h4>
+  <pre>
+    def update_chart(what)
+      case what
+        when :type
+          options._series.each do |series|
+            series._type = type =~ /mix/ ? random_type : type
+          end
+        when: data
+          options._series.sample._data = random_data
+        else
+          # more to come
+      end
+      options._title._text = title
+      options._subtitle._text = subtitle
+    end
+
+    def options
+      @options ||= Volt::Model.new({
+
+        # Used by volt component to identify chart on page.
+        id: 'random',
+
+        # Used by volt component to determine chart mode:
+        #   :chart for Highcharts
+        #   :stock for Highstock (coming soon)
+        #   :map   for Highmaps  (coming later)
+        mode: :chart,
+
+        # Used by volt component as global setting for chart animation.
+        animate: animate,
+
+        # Options passed to Highcharts:
+        # see http://api.highcharts.com/highcharts
+        chart:    { renderTo:   'chart'           },
+        title:    { text:       title             },
+        subtitle: { text:       subtitle          },
+        xAxis:    { categories: category_labels   },
+        yAxis:    { title:      { text: 'VALUE' } },
+        series:   series,
+        tooltip:  false
+      })
+    end
+  </pre>
+  <p>
+    <b>options</b> is a Volt::Model representing the chart configuration and data.
+    The volt-highcharts controller watches for any changes in the model and passes them
+    via the opal-highcharts wrappers to Highcharts.js.
+  </p>
+  <h5> &#123 ruby + opal + volt => happiness &#125</h5>
+
+

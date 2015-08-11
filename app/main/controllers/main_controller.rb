@@ -3,12 +3,12 @@
 module Main
   class MainController < Volt::ModelController
 
-    attr_reader :chart_type, :chart_speed, :chart_animated
-    attr_reader :chart_types, :select_types, :select_speeds
-    attr_reader :non_area_chart_types
+    attr_reader :type, :speed, :animate
+    attr_reader :types, :select_types, :select_speeds
+    attr_reader :non_area_types
 
-    def chart_options
-      @chart_options ||= Volt::Model.new({
+    def options
+      @options ||= Volt::Model.new({
 
         # Used by volt component to identify chart on page.
         id: 'random',
@@ -20,12 +20,12 @@ module Main
         mode: :chart,
 
         # Used by volt component as global setting for chart animation.
-        animate: chart_animated,
+        animate: animate,
 
         # Following options are passed to Highcharts:
         # see http://api.highcharts.com/highcharts
         chart:    { renderTo:   'chart'           },
-        title:    { text:       chart_title       },
+        title:    { text:       title             },
         subtitle: { text:       subtitle          },
         xAxis:    { categories: category_labels   },
         yAxis:    { title:      { text: 'VALUE' } },
@@ -35,40 +35,40 @@ module Main
     end
 
     def index
-      @chart_animated = true
-      @chart_type ||= 'scatter'
-      @chart_types = %w(column spline areaspline scatter bubble line area).sort!
-      @non_area_chart_types = %w(column line spline scatter bubble).sort!
-      @select_types = @chart_types + %w(mix remix)
+      @animate = false
+      @type ||= 'scatter'
+      @types = %w(column spline areaspline scatter bubble line area).sort!
+      @non_area_types = %w(column line spline scatter bubble).sort!
+      @select_types = @types + %w(mix remix)
       @speeds = {'rapid' => 50, 'fast' => 100, 'medium' => 500, 'slow' => 1000, 'pause' => 0 }
       @select_speeds = @speeds.keys
-      self.chart_speed = 'fast'
-      self.model = chart_options
-      @rand_count = 0
+      self.speed = 'fast'
+      self.model = options
+      @count = 0
       poll
     end
 
-    def chart_speed=(speed)
-      @chart_speed = speed
-      @poll_interval = @speeds[@chart_speed]
-      update_chart if @poll_interval == 0
+    def speed=(speed)
+      @speed = speed
+      @interval = @speeds[@speed]
+      update_chart(:all) if @interval == 0
     end
 
     def before_index_remove
-      @poll_interval = 0
+      @interval = 0
       stop_poll
     end
 
-    def chart_animated=(value)
+    def animate=(value)
       suspend_poll do
-        @chart_animated = value
-        chart_options._animate = @chart_animated
+        @animate = value
+        options._animate = @animate
       end
     end
 
-    def chart_type=(type)
-      @chart_type = type
-      update_chart(true)
+    def type=(type)
+      @type = type
+      update_chart(:type)
     end
 
     def select_speed_pairs
@@ -86,25 +86,27 @@ module Main
       page._charts.detect { |e| e._id == id }._chart
     end
 
-    def update_chart(type_change = false)
+    def update_chart(what)
       suspend_poll do
-        @rand_count += 1
-        if type_change
-          chart_options._series.each {|s| s._type = @chart_type =~ /mix/ ? rand_type : @chart_type}
-        else
-          # chart_options._series.sample._data = series_data
-          chart_options._series.sample._data = series_data
+        @count += 1
+        case what
+          when :type
+            options._series.each do |series|
+              series._type = @type =~ /mix/ ? random_type : type
+            end
+          else
+            options._series.sample._data = random_data
         end
-        chart_options._title._text = chart_title
-        chart_options._subtitle._text = subtitle
+        options._title._text = title
+        options._subtitle._text = subtitle
       end
     end
 
     def suspend_poll
-      p = @poll_interval
-      @poll_interval = 0
+      p = @interval
+      @interval = 0
       yield
-      @poll_interval = p
+      @interval = p
     end
 
     def stop_poll
@@ -124,8 +126,8 @@ module Main
                   #{@millisecs} = 0
                 };
                 #{@millisecs} += 50;
-                if (#{@poll_interval} > 0 && (#{@millisecs} % #{@poll_interval}) == 0) {`
-                  update_chart
+                if (#{@interval} > 0 && (#{@millisecs} % #{@interval}) == 0) {`
+                  update_chart(:data)
                 `};
               },
               50
@@ -142,16 +144,16 @@ module Main
       9
     end
 
-    def rand_val
+    def random_val
       rand(90) + 2
     end
 
-    def rand_type
-      non_area_chart_types.sample
+    def random_type
+      non_area_types.sample
     end
 
-    def series_data
-      n_categories.times.collect { rand_val }
+    def random_data
+      n_categories.times.collect { random_val }
     end
 
     def category_labels
@@ -163,16 +165,16 @@ module Main
         {
           type: 'scatter',
           name: "S#{i+1}",
-          data: series_data
+          data: random_data
         }
       end
     end
 
-    def chart_title
-      if chart_speed == 'pause'
-        "#{chart_type.upcase} ##{@rand_count}"
+    def title
+      if speed == 'pause'
+        "#{type.upcase} ##{@count}"
       else
-        "#{chart_speed.upcase} #{chart_type.upcase} ##{@rand_count}"
+        "#{speed.upcase} #{type.upcase} ##{@count}"
       end
     end
 
