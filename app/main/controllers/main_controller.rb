@@ -10,22 +10,20 @@ module Main
     def chart_options
       @chart_options ||= Volt::Model.new({
 
-        # Used by volt component to identity chart on page.
-        # Not used by Highcharts.
+        # Used by volt component to identify chart on page.
         id: 'random',
 
-        # Set chart mode:
+        # Used by volt component to determine chart mode:
         #   :chart for Highcharts
         #   :stock for Highstock
         #   :map   for Highmaps
         mode: :chart,
 
-        # Set whether data redraws should be animated
+        # Used by volt component as global setting for chart animation.
         animate: chart_animated,
 
-        # Following are for Highcharts:
-        # http://api.highcharts.com/highcharts
-        #
+        # Following options are passed to Highcharts:
+        # see http://api.highcharts.com/highcharts
         chart:    { renderTo:   'chart'           },
         title:    { text:       chart_title       },
         subtitle: { text:       subtitle          },
@@ -38,15 +36,13 @@ module Main
 
     def index
       @chart_animated = true
-
       @chart_type ||= 'scatter'
       @chart_types = %w(column spline areaspline scatter bubble line area).sort!
       @non_area_chart_types = %w(column line spline scatter bubble).sort!
       @select_types = @chart_types + %w(mix remix)
-
-      @select_speeds = %w(rapid fast medium slow pause)
+      @speeds = {'rapid' => 50, 'fast' => 100, 'medium' => 500, 'slow' => 1000, 'pause' => 0 }
+      @select_speeds = @speeds.keys
       self.chart_speed = 'fast'
-
       self.model = chart_options
       @rand_count = 0
       poll
@@ -54,17 +50,7 @@ module Main
 
     def chart_speed=(speed)
       @chart_speed = speed
-      # milliseconds
-      @poll_interval = case @chart_speed
-        when 'pause'    then    0
-        when 'rapid'    then   50
-        when 'fast'     then  100
-        when 'medium'   then  500
-        when 'slow'     then 1000
-        when 'slow'     then 2000
-        else
-          raise RuntimeError, "invalid chart speed '#{@chart_speed}'"
-      end
+      @poll_interval = @speeds[@chart_speed]
       update_chart if @poll_interval == 0
     end
 
