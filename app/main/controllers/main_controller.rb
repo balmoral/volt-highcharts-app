@@ -88,13 +88,15 @@ module Main
 
     def update_chart(what)
       suspend_poll do
-        @count += 1
+        # debug __method__, __LINE__, "what=#{what}"
         case what
           when :type
+            @count = 1
             options._series.each do |series|
               series._type = @type =~ /mix/ ? random_type : type
             end
           else
+            @count += 1
             options._series.sample._data = random_data
         end
         options._title._text = title
